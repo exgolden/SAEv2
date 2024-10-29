@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAE</title>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Nav Bar -->
+            <%- include("navBar") %>
+            <!-- Registrar usuario -->
+            <div class="col-10 main-container bg-light">
+                <div class="row col-12 text-center py-5">
+                    <h1>Registar Usuario</h1>
+                </div>
+                <div class="row justify-content-center"> 
+                    <div class="col-8">
+                        <form id="registroForm">
+                            <!-- Tarjeta -->
+                            <div class="form-group">
+                                <label>Tarjeta</label>
+                                <input type="text" class="form-control my-2" placeholder="Escanee una tarjeta nueva" name="tarjeta">
+                            </div>
+                            <!-- Nombre -->
+                            <div class="form-group">
+                                <label>Nombre</label>
+                                <input type="text" class="form-control my-2" placeholder="Todo en minusculas y sin acentos" name="nombreUsuario">
+                            </div>
+                            <!-- Telefono -->
+                            <div class="form-group">
+                                <label>Telefono</label>
+                                <input type="text" class="form-control my-2" placeholder="Telefono celular" name="telefono">
+                            </div>
+                            <!-- Tipo de vehiculo -->
+                            <div class="form-group">
+                                <label>Tipo de vehiculo</label>
+                                <select class="form-control my-2" name="tipo">
+                                    <option value="" disabled selected>Seleccione el tipo de vehículo</option>
+                                    <option value="automovil">Automovil</option>
+                                    <option value="motocicleta">Motocicleta</option>
+                                    <option value="bicicleta">Bicicleta</option>
+                                    <option value="otro">Otro</option>
+                                </select>
+                            </div>
+                            <!-- Marca del vehiculo -->
+                            <div class="form-group">
+                                <label>Marca del vehiculo</label>
+                                <input type="text" class="form-control my-2" placeholder="Todo en minusculas" name="marca">
+                            </div>
+                            <!-- Modelo del vehiculo -->
+                            <div class="form-group">
+                                <label>Modelo del vehiculo</label>
+                                <input type="text" class="form-control my-2" placeholder="Todo en minusculas" name="modelo">
+                            </div>
+                            <!-- Placas del vehiculo -->
+                            <div class="form-group">
+                                <label>Placas</label>
+                                <input type="text" class="form-control my-2" placeholder="Todo en mayusculas y separado por guiones" name="placas">
+                            </div>
+                            <button type="submit" class="btn btn-primary my-2">Registrar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const submitForm = async(event) => {
+            event.preventDefault()
+            const form = document.getElementById("registroForm")
+            if(!form){
+                console.log("Forma no encontrada")
+                return
+            }
+            const formData = new FormData(form)
+            const data = {}
+            formData.forEach((value, key) => {
+                data[key] = value
+            })
+            try {
+                const response = await fetch("http://127.0.0.1:2100/api/usuarios/registro", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(data)
+                })
+                if(!response.ok) {
+                    throw new Error(`Error: ${response.status}: ${response.statusText}`)
+                }
+                form.reset()
+            } catch (error) {
+                console.log("Error al registrar usuario en el front: ", error.message)
+            }
+        }
+        document.getElementById("registroForm").addEventListener("submit", submitForm)
+    </script>
+</body>
+</html>
